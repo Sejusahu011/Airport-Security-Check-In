@@ -1,0 +1,161 @@
+🟩 STEP 1 — Create a new Replit project
+
+Go to https://replit.com/
+
+Create HTML/CSS/JS project
+(No backend needed for prototype)
+
+This gives you:
+
+index.html
+script.js
+style.css
+
+🟩 STEP 2 — Build the UI (frontend only)
+
+Your UI will have 4 simple screens:
+
+🔹 Page 1: Start / Welcome
+
+Buttons:
+
+“Start Automatic Check-In Prototype”
+
+“Start Manual Prototype”
+
+🔹 Page 2: Upload Documents
+
+Inputs:
+
+Upload Passport Image
+
+Upload Boarding Pass Image
+
+🔹 Page 3: Capture Selfie (Camera Demo)
+
+Use JS camera preview
+
+Button → Capture photo
+
+🔹 Page 4: Show Prototype Results
+
+Display extracted passport info (dummy)
+
+Display “Face match score” (dummy)
+
+Green or Red status
+
+This UI alone is 60% of your prototype.
+
+🟩 STEP 3 — Add Camera Demo (Front Camera)
+
+Inside script.js:
+
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => {
+  document.getElementById("video").srcObject = stream;
+});
+
+
+Add a button to “Capture Image”.
+
+You will store the selfie in a <canvas>.
+
+🟩 STEP 4 — Simulate OCR (No real AI needed)
+
+When user uploads a passport photo, you simply:
+
+✔ Show the photo
+✔ Extract prototype text manually coded, like:
+
+const extractedOCR = {
+  name: "JOHN DOE",
+  passport: "H1234567",
+  nationality: "INDIA",
+  expiry: "15-08-2032"
+};
+
+
+This simulates OCR for prototype.
+
+🟩 STEP 5 — Simulate Face Verification
+
+No real face recognition needed.
+
+When the user takes a selfie:
+
+✔ Calculate a random matching score, for demo:
+
+const similarity = Math.floor(Math.random() * (98 - 85 + 1)) + 85;
+
+
+Show:
+
+“Face match score: 91%”
+
+This is enough to demonstrate the idea.
+
+If score < 80:
+Show “Verification Failed”.
+
+🟩 STEP 6 — Add Final Result Screen
+
+Show:
+
+Passport Verified ✔
+Boarding Pass Verified ✔
+Face Matched ✔
+KYC Score: 92%
+Status: CLEAR FOR SECURITY CHECK
+
+
+or
+
+Face mismatch ❌
+Status: SECURITY ALERT
+
+
+This step is essential for prototype.
+
+🟩 STEP 7 — Add Flow Animation / Step Progress
+
+Use simple JS to show progress:
+
+Step 1 → Step 2 → Step 3 → Step 4
+
+This makes the prototype look professional.
+
+🟩 STEP 8 — Optional: Add Voice Instructions (Simple)
+
+Use small audio files:
+
+“Please upload your passport”
+
+“Please look into the camera”
+
+Just use:
+
+<audio src="instruction1.mp3" autoplay></audio>
+
+🟩 STEP 9 — Deploy on Replit
+
+Replit automatically hosts the website.
+
+Share link:
+https://airport-prototype.yourname.repl.co
+
+🟩 STEP 10 — Prepare Your Demo Script
+
+When you present:
+
+Show workflow
+
+Upload sample passport image
+
+Upload sample boarding pass
+
+Take a live selfie demo
+
+System shows results
+
+Explain: “This is a prototype; full version will use AI APIs.”
