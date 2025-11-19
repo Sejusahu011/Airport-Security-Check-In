@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Camera, AlertCircle } from "lucide-react";
+import { Camera, AlertCircle, SwitchCamera } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface CameraCaptureProps {
@@ -9,18 +9,21 @@ interface CameraCaptureProps {
   onBack?: () => void;
 }
 
+type FacingMode = "user" | "environment";
+
 export default function CameraCapture({ onCapture, onBack }: CameraCaptureProps) {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [permissionGranted, setPermissionGranted] = useState(false);
+  const [facingMode, setFacingMode] = useState<FacingMode>("user");
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const startCamera = async () => {
+  const startCamera = async (mode: FacingMode = facingMode) => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
+        video: { facingMode: mode },
       });
       setStream(mediaStream);
       setPermissionGranted(true);
@@ -39,6 +42,13 @@ export default function CameraCapture({ onCapture, onBack }: CameraCaptureProps)
       stream.getTracks().forEach((track) => track.stop());
       setStream(null);
     }
+  };
+
+  const switchCamera = async () => {
+    const newMode: FacingMode = facingMode === "user" ? "environment" : "user";
+    setFacingMode(newMode);
+    stopCamera();
+    await startCamera(newMode);
   };
 
   useEffect(() => {
@@ -105,7 +115,7 @@ export default function CameraCapture({ onCapture, onBack }: CameraCaptureProps)
                       </p>
                     </div>
                     <Button
-                      onClick={startCamera}
+                      onClick={() => startCamera()}
                       data-testid="button-enable-camera"
                     >
                       Enable Camera
@@ -114,17 +124,34 @@ export default function CameraCapture({ onCapture, onBack }: CameraCaptureProps)
                 )}
 
                 {permissionGranted && !capturedImage && (
-                  <div className="relative">
-                    <video
-                      ref={videoRef}
-                      autoPlay
-                      playsInline
-                      muted
-                      className="w-full aspect-video rounded-md bg-black"
-                      data-testid="video-camera-preview"
-                    />
-                    <div className="absolute inset-0 border-2 border-primary/30 rounded-md pointer-events-none">
-                      <div className="absolute inset-[20%] border-2 border-primary/50 rounded-full" />
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <video
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        muted
+                        className="w-full aspect-video rounded-md bg-black"
+                        data-testid="video-camera-preview"
+                      />
+                      <div className="absolute inset-0 border-2 border-primary/30 rounded-md pointer-events-none">
+                        <div className="absolute inset-[20%] border-2 border-primary/50 rounded-full" />
+                      </div>
+                      <Button
+                        size="icon"
+                        variant="secondary"
+                        className="absolute bottom-4 right-4"
+                        onClick={switchCamera}
+                        data-testid="button-switch-camera"
+                      >
+                        <SwitchCamera className="w-5 h-5" />
+                      </Button>
+                    </div>
+                    <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                      <Camera className="w-4 h-4" />
+                      <span>
+                        {facingMode === "user" ? "Front Camera" : "Back Camera"}
+                      </span>
                     </div>
                   </div>
                 )}
